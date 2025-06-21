@@ -36,6 +36,7 @@ const Header = () => {
     }, []);
 
     useEffect(() => {
+        console.log(getUserData())
         const updateUser = () => {
             setUser(getUserData());
         };
@@ -74,10 +75,10 @@ const Header = () => {
                 <div className="relative mt-2 sm:mt-0" ref={dropdownRef}>
                     {user ? (
                         <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
-                            <span>Xin chào {user.name}</span>
+                            <span>Xin chào {user.name}</span> 
                             <FaUserCircle className="text-2xl text-gray-700" />
                             {showDropdown && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-md z-10">
+                                <div className="absolute right-0 mt-30 w-48 bg-white rounded shadow-md z-10">
                                     <a href="/profile" className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-200">
                                         <FaIdBadge /> Thông tin cá nhân
                                     </a>
@@ -88,10 +89,10 @@ const Header = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="flex">
-                            <a href="/register" className="text-blue-700 hover:underline pr-2.5 font-semibold border-r">Đăng ký</a>
-                            <a href="/login" className="text-blue-700 hover:underline pl-2.5 font-semibold">Đăng nhập</a>
-                        </div>
+                    <div className="flex">
+                        <a href="/register" className="text-blue-700 hover:underline pr-2.5 font-semibold border-r">Đăng ký</a>
+                        <a href="/login" className="text-blue-700 hover:underline pl-2.5 font-semibold">Đăng nhập</a>
+                    </div>
                     )}
                 </div>
             </header>

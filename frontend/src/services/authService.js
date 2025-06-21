@@ -25,9 +25,7 @@ export const login = async (username, password, rememberMe) => {
     const userRes = await axios.get(`${BACKEND_URL}/users/token/${data.access_token}`, {
       headers: { Authorization: `Bearer ${data.access_token}` },
     });
-
-    const user = userRes.data;
-    storeUserData(user, rememberMe);
+    storeUserData(userRes.data, rememberMe); // ✅ Lưu thông tin người dùng sau khi login
   } catch (err) {
     console.error("Failed to fetch user info:", err);
   }
