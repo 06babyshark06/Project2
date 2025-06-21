@@ -20,17 +20,39 @@ export const login = async (username, password, rememberMe) => {
 
   const data = res.data;
   storeTokenData(data, rememberMe);
+
   try {
-    await axios.get(`${BACKEND_URL}/users/token/${data.access_token}`, {
-      headers: {
-        Authorization: `Bearer ${data.access_token}`,
-      },
+    const userRes = await axios.get(`${BACKEND_URL}/users/token/${data.access_token}`, {
+      headers: { Authorization: `Bearer ${data.access_token}` },
     });
+
+    const user = userRes.data;
+    storeUserData(user, rememberMe);
   } catch (err) {
-    console.error("Failed to sync user:", err);
+    console.error("Failed to fetch user info:", err);
   }
+
   return data;
 };
+
+export const storeUserData = (user, rememberMe) => {
+  const storage = rememberMe ? localStorage : sessionStorage;
+  storage.setItem("user", JSON.stringify(user));
+};
+
+export const getUserData = () => {
+  return (
+    JSON.parse(localStorage.getItem("user")) ||
+    JSON.parse(sessionStorage.getItem("user")) ||
+    null
+  );
+};
+
+export const clearUserData = () => {
+  localStorage.removeItem("user");
+  sessionStorage.removeItem("user");
+};
+
 
 export const refreshToken = async () => {
   const tokenData = getTokenData();
@@ -69,6 +91,9 @@ export const getAccessToken = () => {
 
 export const logout = () => {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("user");
   sessionStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem("user");
   window.location.href = "/login";
 };
+

@@ -1,48 +1,48 @@
 import React, { useEffect, useState, useRef } from 'react';
 import VietNam_flag from '../assets/imgs/vietnam_flag.webp';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaSignOutAlt, FaIdBadge, FaHome, FaNewspaper, FaQuestionCircle, FaTrafficLight } from 'react-icons/fa';
-import logo from '../assets/imgs/logo.png'
+import logo from '../assets/imgs/logo.png';
+import { getUserData, logout } from '../services/authService';
 
 const Header = () => {
     const [location, setLocation] = useState('Đang xác định...');
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
-
     const [user, setUser] = useState(null);
 
-    const formatVietnameseDate = (date) => {
+    const today = (() => {
         const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-        const dayName = days[date.getDay()];
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        return `${dayName}, ${day}/${month}/${year}`;
-    };
-
-    const today = formatVietnameseDate(new Date());
+        const date = new Date();
+        return `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    })();
 
     useEffect(() => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                const { latitude, longitude } = position.coords;
+            navigator.geolocation.getCurrentPosition(async ({ coords }) => {
                 try {
-                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
-                    const data = await response.json();
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${coords.latitude}&lon=${coords.longitude}&format=json`);
+                    const data = await res.json();
                     const city = data.address.city || data.address.town || data.address.village || data.address.state || 'Không xác định';
                     setLocation(city);
-                } catch (error) {
-                    console.error('Lỗi lấy vị trí:', error);
+                } catch {
                     setLocation('Không xác định');
                 }
-            }, (error) => {
-                console.error('Không cho phép truy cập vị trí:', error);
-                setLocation('Không xác định');
-            });
+            }, () => setLocation('Không xác định'));
         } else {
             setLocation('Trình duyệt không hỗ trợ định vị');
         }
+    }, []);
+
+    useEffect(() => {
+        const updateUser = () => {
+            setUser(getUserData());
+        };
+
+        updateUser(); // Ban đầu
+        window.addEventListener("storage", updateUser); // Tự động cập nhật nếu user thay đổi
+        return () => window.removeEventListener("storage", updateUser);
     }, []);
 
     useEffect(() => {
@@ -59,17 +59,16 @@ const Header = () => {
 
     const handleLogout = () => {
         alert('Bạn đã đăng xuất');
-        setUser(null);
+        logout();
         navigate('/login');
     };
 
     return (
         <div className="container mx-auto">
-            {/* Header */}
             <header className="bg-yellow-300 px-8 py-4 flex justify-between items-center flex-wrap">
                 <div className="flex items-center">
                     <a href="/"><img src={logo} alt="Logo" className="mr-2 h-12" /></a>
-                    <h1 className="text-xl sm:text-2xl font-bold text-red-600 leading-tight">BỘ CÔNG AN<br />CỤC CẢNH SÁT GIAO THÔNG</h1> 
+                    <h1 className="text-xl sm:text-2xl font-bold text-red-600 leading-tight">BỘ CÔNG AN<br />CỤC CẢNH SÁT GIAO THÔNG</h1>
                 </div>
 
                 <div className="relative mt-2 sm:mt-0" ref={dropdownRef}>
@@ -97,7 +96,6 @@ const Header = () => {
                 </div>
             </header>
 
-            {/* Nav */}
             <nav className="bg-blue-800 text-white px-8 py-2">
                 <div className="flex flex-wrap justify-between items-center">
                     <div className="flex flex-wrap items-center py-1">
@@ -108,9 +106,7 @@ const Header = () => {
                     </div>
                     <div className="text-sm text-white flex items-center">
                         <span>{location} - {today}</span>
-                        <span className="ml-3 flex items-center">
-                            <img src={VietNam_flag} alt="VN flag" className="h-4 w-6" />
-                        </span>
+                        <img src={VietNam_flag} alt="VN flag" className="ml-3 h-4 w-6" />
                     </div>
                 </div>
             </nav>
