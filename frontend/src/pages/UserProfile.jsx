@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import avatar from "../assets/imgs/avatar.webp";
-import { logout, getUserData, storeUserData } from '../services/authService';
+import { logout, getUserData, storeUserData, getAccessToken } from '../services/authService';
+import axios from 'axios';
+
+const BACKEND_URL = "http://localhost:8888/api/v1";
 
 const UserProfile = () => {
   const navigate = useNavigate();
-
-  const [user, setUser] = useState({
-    avatar: avatar,
-    name: '',
-    age: '',
-    sex: '',
-    dob: '',
-    address: '',
-    phone: '',
-    citizenId: '',
-  });
-
+  const [user, setUser] = useState(null);
+  const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ ...user });
 
   useEffect(() => {
     const userData = getUserData();
@@ -30,23 +22,34 @@ const UserProfile = () => {
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditData({ ...editData, [name]: value });
+    setEditData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setEditData({ ...editData, avatar: imageUrl });
+      setEditData(prev => ({ ...prev, avatar: imageUrl }));
     }
   };
 
-  const handleSave = () => {
-    setUser(editData);
-    setIsEditing(false);
-    storeUserData(editData, true);
-    window.dispatchEvent(new Event("storage")); // thông báo cho Header cập nhật
-    alert('Thông tin đã được cập nhật!');
+  const handleSave = async () => {
+    try {
+      const res = await axios.put(`${BACKEND_URL}/users/${user.id}`, editData, {
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+      });
+      setUser(res.data);
+      setEditData(res.data);
+      storeUserData(res.data, true);
+      setIsEditing(false);
+      window.dispatchEvent(new Event("storage"));
+      alert("Thông tin đã được cập nhật!");
+    } catch (err) {
+      console.error("Lỗi khi cập nhật người dùng:", err);
+      alert("Cập nhật thất bại. Vui lòng thử lại.");
+    }
   };
 
   const handleCancel = () => {
@@ -55,60 +58,54 @@ const UserProfile = () => {
   };
 
   const handleLogout = () => {
-    alert('Bạn đã đăng xuất');
+    alert("Bạn đã đăng xuất");
     logout();
-    navigate('/login');
+    navigate("/login");
   };
+
+  if (!user || !editData) return <div className="p-4">Đang tải thông tin người dùng...</div>;
 
   return (
     <div className="container mx-auto bg-gray-100 py-6 px-4 min-h-150 md:p-12">
-      <div className="mx-auto p-6">
-        <div>
+      <div className="">
+        <div className="flex flex-col ">
           <img
-            className="w-32 h-32 rounded-full border-4 border-blue-500"
-            src={isEditing ? editData.avatar : user.avatar}
+            className="w-32 h-32 rounded-full border-4 border-blue-500 object-cover"
+            src={editData.avatar || avatar}
             alt="Ảnh đại diện"
           />
           {isEditing && (
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-2 block border w-50 p-1"
-            />
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-2 block border w-50 p-1"
+              />
+              <p className="text-sm text-gray-500">Chọn ảnh đại diện mới</p>
+            </>
           )}
-          {isEditing ? (
-            <input
-              type="text"
-              name="name"
-              value={editData.name}
-              onChange={handleEditChange}
-              className="mt-4 text-xl font-semibold border rounded px-2 py-1"
-            />
-          ) : (
-            <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
-          )}
+          <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
-          {[{ label: 'Tuổi', key: 'age' }, { label: 'Ngày sinh', key: 'dob' }, { label: 'Giới tính', key: 'sex' },
-            { label: 'SĐT', key: 'phone' }, { label: 'CCCD', key: 'citizenId' }, { label: 'Địa chỉ', key: 'address', full: true }]
-            .map(item => (
-              <div key={item.key} className={item.full ? 'sm:col-span-2' : ''}>
-                <span className="font-semibold">{item.label}:</span>{' '}
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name={item.key}
-                    value={editData[item.key]}
-                    onChange={handleEditChange}
-                    className="border rounded px-2 py-1 w-full mt-1"
-                  />
-                ) : (
-                  <span>{user[item.key]}</span>
-                )}
-              </div>
-            ))}
+        <div className="mt-6 grid grid-cols-1 gap-4 text-gray-700">
+          {[{ label: 'Số điện thoại', key: 'phoneNumber' },
+            { label: 'Email', key: 'email' }].map(item => (
+            <div key={item.key}>
+              <label className="font-semibold text-xl block">{item.label}:</label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name={item.key}
+                  value={editData[item.key] || ''}
+                  onChange={handleEditChange}
+                  className="border rounded px-2 py-1 w-full mt-1"
+                />
+              ) : (
+                <p>{user[item.key]}</p>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-between gap-4">
