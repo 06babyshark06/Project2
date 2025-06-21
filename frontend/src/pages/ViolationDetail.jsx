@@ -39,9 +39,7 @@ const ViolationDetail = () => {
             </div>
         );
     }
-    const { timestamp, name, isPurchased, amount, image } = detail;
-
-    
+    const { timestamp, name, isPurchased, amount, image, location } = detail;
 
     return (
         <div className="container mx-auto min-h-150 bg-gray-100 py-8 px-6 ">
@@ -50,11 +48,10 @@ const ViolationDetail = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <p><strong>Họ tên:</strong> {name}</p>
-                        {/* <p><strong>Tuổi:</strong> {detail.age}</p> */}
-                        {/* <p><strong>Quê quán:</strong> {detail.hometown}</p> */}
                     </div>
                     <div>
                         <p><strong>Ngày phạm lỗi:</strong> {timestamp}</p>
+                        <p><strong>Địa điểm vi phạm:</strong> {location}</p>
                         <p><strong>Số tiền phạt:</strong> {amount}</p>
                         <p>
                             <strong>Trạng thái thanh toán:</strong>{' '}
@@ -67,7 +64,7 @@ const ViolationDetail = () => {
 
                 <div>
                     <p className="mb-2 font-semibold">Hình ảnh vi phạm:</p>
-                    <img src={image} alt="Hình ảnh vi phạm" className="w-full rounded-md border border-gray-300"/>
+                    <img src={image} alt="Hình ảnh vi phạm" className="w-full rounded-md border border-gray-300" />
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center">

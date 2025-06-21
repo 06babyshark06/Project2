@@ -40,8 +40,8 @@ const Header = () => {
             setUser(getUserData());
         };
 
-        updateUser(); // Ban đầu
-        window.addEventListener("storage", updateUser); // Tự động cập nhật nếu user thay đổi
+        updateUser();
+        window.addEventListener("storage", updateUser);
         return () => window.removeEventListener("storage", updateUser);
     }, []);
 
@@ -100,7 +100,7 @@ const Header = () => {
                 <div className="flex flex-wrap justify-between items-center">
                     <div className="flex flex-wrap items-center py-1">
                         <a href="/" className="hover:underline flex px-2.5 items-center gap-2 border-r"><FaHome />Trang chủ</a>
-                        <a href="#" className="hover:underline flex px-2.5 items-center gap-2 border-r"><FaNewspaper />Tin tức</a>
+                        <a href="/news" className="hover:underline flex px-2.5 items-center gap-2 border-r"><FaNewspaper />Tin tức</a>
                         <a href="#" className="hover:underline flex px-2.5 items-center gap-2 border-r"><FaTrafficLight />An toàn giao thông</a>
                         <a href="#" className="hover:underline flex px-2.5 items-center gap-2"><FaQuestionCircle />Hỏi đáp</a>
                     </div>

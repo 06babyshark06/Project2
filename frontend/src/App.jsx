@@ -7,6 +7,7 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import UserProfile from "./pages/UserProfile"
 import NotFound from "./pages/NotFound"
+import NewsPage from "./pages/NewsPage"
 
 function App() {
   const location = useLocation();
@@ -21,6 +22,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/detail/:id" element={<ViolationDetail />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/news" element={<NewsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideHeaderFooter && <Footer />}

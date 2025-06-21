@@ -48,6 +48,7 @@ export const getUserData = () => {
   );
 };
 
+
 export const clearUserData = () => {
   localStorage.removeItem("user");
   sessionStorage.removeItem("user");

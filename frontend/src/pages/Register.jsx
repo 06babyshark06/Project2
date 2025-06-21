@@ -78,7 +78,11 @@ const Register = () => {
               placeholder="Nhập số định danh cá nhân"
               className="text-black px-3 py-2 rounded border border-gray-500 focus:outline-none text-sm"
               required
+              pattern="\d{8,}"
+              title="Vui lòng nhập ít nhất 8 chữ số"
+              inputMode="numeric"
             />
+
             <div className="text-base text-gray">Số điện thoại</div>
             <input
               type="text"
