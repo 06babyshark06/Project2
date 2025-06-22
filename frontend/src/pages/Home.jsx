@@ -54,8 +54,9 @@ const Home = () => {
       timestamp: violations[index].timestamp,
       name: owner.name,
       isPurchased: violations[index].isPurchased,
-      amount:Math.floor( Math.random() * 10000000).toLocaleString('vi-VN'),
+      amount: Math.floor(Math.random() * 10000000).toLocaleString('vi-VN'),
       image: "",
+      location: violations[index].location,
     };
     useViolationStore.getState().setDetail(data);
     console.log(data);
@@ -137,9 +138,8 @@ const Home = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`py-3 px-4 rounded-md text-white font-medium ${
-              isSubmitting ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
-            } transition-colors`}
+            className={`py-3 px-4 rounded-md text-white font-medium ${isSubmitting ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+              } transition-colors`}
           >
             {isSubmitting ? "Đang xử lý..." : "Tra cứu"}
           </button>
@@ -177,13 +177,15 @@ const Home = () => {
                   <p>
                     <strong>Ngày vi phạm:</strong> {v.timestamp}
                   </p>
+                  <p>
+                    <strong>Địa điểm vi phạm:</strong> {v.location}
+                  </p>
                 </div>
 
                 <div className="flex items-center pl-6">
                   <p
-                    className={`font-semibold ${
-                      v.isPurchased ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`font-semibold ${v.isPurchased ? "text-green-600" : "text-red-600"
+                      }`}
                   >
                     {v.isPurchased ? "Đã thanh toán" : "Chưa thanh toán"}
                   </p>
