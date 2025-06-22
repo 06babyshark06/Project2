@@ -48,6 +48,7 @@ const ViolationDetail = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <p><strong>Họ tên:</strong> {name}</p>
+                        
                     </div>
                     <div>
                         <p><strong>Ngày phạm lỗi:</strong> {timestamp}</p>

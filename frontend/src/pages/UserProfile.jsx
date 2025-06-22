@@ -90,10 +90,11 @@ const UserProfile = () => {
 
         <div className="mt-6 grid grid-cols-1 gap-4 text-gray-700">
           {[{ label: 'Số điện thoại', key: 'phoneNumber' },
-            { label: 'Email', key: 'email' }].map(item => (
+          { label: 'Email', key: 'email' },
+          { label: 'CCCD', key: 'identityCard' }].map(item => (
             <div key={item.key}>
               <label className="font-semibold text-xl block">{item.label}:</label>
-              {isEditing ? (
+              {isEditing && item.key !== 'identityCard' ? (
                 <input
                   type="text"
                   name={item.key}
@@ -106,6 +107,7 @@ const UserProfile = () => {
               )}
             </div>
           ))}
+
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-between gap-4">

@@ -8,6 +8,7 @@ const Register = () => {
   const [id, setId] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [identityCard, setIdentityCard] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +28,7 @@ const Register = () => {
       await api.post("auth/register", {
         username: id,
         fullName: username,
-        identityCard: id,
+        identityCard: identityCard,
         phoneNumber: phone,
         email,
         password,
@@ -36,6 +37,7 @@ const Register = () => {
       setId("");
       setPhone("");
       setEmail("");
+      setIdentityCard("");
       setPassword("");
       setConfirmPassword("");
       navigate("/login");
