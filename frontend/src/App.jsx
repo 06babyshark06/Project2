@@ -8,6 +8,7 @@ import Footer from "./components/Footer"
 import UserProfile from "./pages/UserProfile"
 import NotFound from "./pages/NotFound"
 import NewsPage from "./pages/NewsPage"
+import SafetyNews from "./pages/SafetyNews"
 
 function App() {
   const location = useLocation();
@@ -23,6 +24,7 @@ function App() {
         <Route path="/detail/:id" element={<ViolationDetail />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/news" element={<NewsPage />} />
+        <Route path="/safety" element={<SafetyNews />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideHeaderFooter && <Footer />}
