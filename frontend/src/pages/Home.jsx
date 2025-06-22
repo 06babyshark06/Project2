@@ -40,6 +40,14 @@ const Home = () => {
     },
   ];
 
+  const violationLabels = {
+  VUOT_DEN_DO: "Vượt đèn đỏ",
+  DI_SAI_LAN: "Đi sai làn",
+  KHONG_DO_MU_BAO_HIEM: "Không đội mũ bảo hiểm",
+  DUNG_XE_TREN_VACH_DANH_CHO_NGUOI_DI_BO: "Dừng xe trên vạch dành cho người đi bộ",
+  // Thêm các loại khác nếu cần
+};
+
   const goToDetail = (violationId, index) => {
     const data = {
       licensePlate: licensePlate,
@@ -164,7 +172,7 @@ const Home = () => {
                     <strong>Loại phương tiện:</strong> {vehicle.vehicleType}
                   </p>
                   <p>
-                    <strong>Lỗi vi phạm:</strong> {v.violationType}
+                    <strong>Lỗi vi phạm:</strong> {violationLabels[v.violationType] || v.violationType}
                   </p>
                   <p>
                     <strong>Ngày vi phạm:</strong> {v.timestamp}
